@@ -36,8 +36,7 @@ public class Rank {
         return this.frequency;
     }
 
-    // String representation of the term and its frequency
-    @Override
+    
     public String toString() {
         return "(" + termWord + ", " + frequency + ")"; // Example: "(word, 5)"
     }

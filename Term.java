@@ -2,8 +2,8 @@
 
 
 public class Term {
-    ProcessedWord termWord; // Represents the word or term //used to beVocabulary  word
-    boolean[] documentPresence; // array to track presence of the term in documents //used to be docIDS
+    ProcessedWord termWord; // Represents the word or term 
+    boolean[] documentPresence; // array to track presence of the term in documents 
 
     // Default constructor initializes the boolean array and vocabulary
     public Term() {
@@ -25,7 +25,7 @@ public class Term {
     }
 
     // Mark the term as present in a specific document by ID //takes index changes it to true if found
-    public boolean markDocumentPresence(int docID) { //used to be public boolean add_docID ( int docID) 
+    public boolean markDocumentPresence(int docID) {  
     
         if (!documentPresence[docID]) {
             this.documentPresence[docID] = true;
@@ -46,7 +46,7 @@ public class Term {
     }
 
     // Returns a copy of the document presence array
-    public boolean[] getDocumentMapping() { //used to be public boolean [] getDocs ()
+    public boolean[] getDocumentMapping() { 
         boolean[] copy = new boolean[documentPresence.length];
         // Copy values into the new array
         for (int i = 0; i < copy.length; i++) {
@@ -56,19 +56,22 @@ public class Term {
     }
 
     // String representation of the term and associated documents
-    @Override
+   
     public String toString() {
         String docs = "";
-        for (int i = 0, count = 0; i < documentPresence.length; i++) {
-            if (documentPresence[i]) {
-                if (count == 0) {
-                    docs += " " + i; // firt document ID without a comma
-                } else {
-                    docs += ", " + i; // rest of IDs with a comma
+        for (int i = 0, count = 0; i < documentPresence.length; i++) 
+            if (count == 0 && documentPresence[i]== true) {
+               
+                    docs += " " +String.valueOf(i); 
+                    count++;// firt document ID without a comma
+                } else 
+                if (documentPresence[i]== true){
+                    docs += ", " +String.valueOf(i); 
+                    count++;// rest of IDs with a comma
                 }
-                count++;
-            }
-        }
+               
+            
+        
         return termWord + "[" + docs + "]"; // Example: "word[1, 2, 3]"
     }
 }

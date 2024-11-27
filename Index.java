@@ -1,120 +1,147 @@
-public class Index {
+public class Index{
 
-    // Represents a document and its words
-    class Document {
-        LinkedList<String> index; 
-        int documentID;
+    class frequency
+    {
+        int docID = 0;
+        int f = 0;
+    }//representing the frequency of a term in a document
 
-        public Document() {
-            documentID = 0;
-            index = new LinkedList<>();
-        }
+    class Document { //class representing a document and the words it contains
+           LinkedList <String> index; 
+           int docID;
+           
+            
 
-        public void insertNew(String W) {
-            index.insert(W);
-        }
-
-        public boolean wordExists(String word) {
-            if (index.empty()) return false;
-
-            index.findFirst();
-            for (int i = 0; i < index.size; i++) {
-                if (index.retrieve().compareTo(word) == 0) return true;
-                index.findNext();
+            public Document() { // defualt constructor
+                 docID = 0;
+               index = new LinkedList <String>();
             }
-            return false;
-        }
-    }
 
-    // Array to store documents
-    Document[] documents;
+           public boolean wordExists(String word){  // Checks if a specific word exists in the document
+           
+               if (index.empty())
+                   return false;
 
+               index.findFirst();
+               for ( int i = 0 ; i < index.size ; i++){//open loop
+                if ( index.retrieve().compareTo(word) == 0)
+                       return true;
+                  index.findNext();
+                 
+               }//close loop
+               return false; // when the word is not found
+           }//close method
+           
+           
+            public void insertNew(String word){ // Adds a new word to the document's word list
+            
+                index.insert(word);
+            }
+    }//close class 
+    
+ 
+  Document [] indexes;
+  frequency [] freqs;
+
+   
     public Index() {
-        documents = new Document[50];
-        for (int i = 0; i < documents.length; i++) {
-            documents[i] = new Document();
-            documents[i].documentID = i;
-        }
+        indexes = new Document [50];
+        freqs = new frequency [50];
+        
+        for ( int i = 0 ; i < indexes.length ; i++){// Initialize each document with a unique ID
+            indexes [i] = new Document();
+            indexes [i].docID = i; 
     }
-
-    public void addtoDocument(int dID, String W) {
-        if (dID >= 0 && dID < documents.length) {
-            documents[dID].insertNew(W);
-        } else {
-            System.out.println("Invalid document ID: " + dID);
-        }
     }
-
-    public void printDocument(int dID) {
-        if (documents[dID].index.empty()) {
-            System.out.println("Empty Document");
-            return;
-        }
-
-        documents[dID].index.findFirst();
-        for (int i = 0; i < documents[dID].index.size; i++) {
-            System.out.print(documents[dID].index.retrieve() + " ");
-            documents[dID].index.findNext();
-        }
-        System.out.println();
+        
+    public void addDocument( int  docID, String data){// Adds a word to a specific document
+          indexes[docID].insertNew(data);
     }
+   
+    public  boolean [] findDocuments(String W){ // Returns a boolean array indicating which documents contain the specified word
+    
+    // Create the flag array dynamically based on the number of documents
+    boolean[] flag = new boolean[50];
+    for (int i = 0 ; i < flag.length ; i++)
+        flag[i] = false;
+    
+    for (int i = 0 ; i < flag.length ; i++)
+        if (indexes[i].wordExists(W))
+            flag[i] = true;
+    return flag;
+}
+       public boolean [] ORQuery (String W)
+        {
+            String [] orParts = W.split(" OR ");
+            boolean [] result = findDocuments(orParts[0].toLowerCase().trim());
 
-    public boolean[] findDocuments(String W) {
-        boolean[] flag = new boolean[documents.length];
-        for (int i = 0; i < documents.length; i++) {
-            flag[i] = documents[i].wordExists(W);
-        }
-        return flag;
-    }
-
-    public boolean[] AND_OR_Function(String W) {
-        if (!W.contains(" OR ") && !W.contains(" AND ")) {
-            return findDocuments(W.toLowerCase().trim());
-        }
-
-        if (W.contains(" OR ") && W.contains(" AND ")) {
-            String[] AND_ORs = W.split(" OR ");
-            boolean[] result = AND_Function(AND_ORs[0]);
-
-            for (int i = 1; i < AND_ORs.length; i++) {
-                boolean[] tempResult = AND_Function(AND_ORs[i]);
-                for (int j = 0; j < documents.length; j++) {
-                    result[j] = result[j] || tempResult[j];
-                }
+            for ( int i = 1 ; i< orParts.length ; i++)
+            {
+                boolean [] tempResult = findDocuments(orParts[i].toLowerCase().trim());
+                for ( int j = 0 ; j <50 ; j++)
+                    result [j] = result[j] || tempResult[j];
             }
             return result;
         }
 
-        if (W.contains(" AND ")) {
-            return AND_Function(W);
+         public boolean [] AndQuery (String W)
+        {
+            String [] andParts = W.split(" AND ");
+            boolean [] result = findDocuments(andParts[0].toLowerCase().trim());
+
+            for ( int i = 1 ; i< andParts.length ; i++)
+            {
+                boolean [] tempResult = findDocuments(andParts[i].toLowerCase().trim());
+                for (int j = 0; j < 50; j++)
+                   result[j] = result[j] && tempResult[j];
+            }                
+            return result;
         }
-
-        return OR_Function(W);
-    }
-
-    public boolean[] OR_Function(String W) {
-        String[] orParts = W.split(" OR ");
-        boolean[] result = findDocuments(orParts[0].toLowerCase().trim());
-
-        for (int i = 1; i < orParts.length; i++) {
-            boolean[] tempResult = findDocuments(orParts[i].toLowerCase().trim());
-            for (int j = 0; j < documents.length; j++) {
-                result[j] = result[j] || tempResult[j];
+        
+          public boolean [] AND_OR_Function (String W )
+        {
+            if (! W.contains(" OR ") && ! W.contains(" AND "))// Check if the query contains neither AND nor OR
+            {
+                 return findDocuments(W.toLowerCase().trim());
             }
-        }
-        return result;
-    }
-
-    public boolean[] AND_Function(String W) {
-        String[] andParts = W.split(" AND ");
-        boolean[] result = findDocuments(andParts[0].toLowerCase().trim());
-
-        for (int i = 1; i < andParts.length; i++) {
-            boolean[] tempResult = findDocuments(andParts[i].toLowerCase().trim());
-            for (int j = 0; j < documents.length; j++) {
-                result[j] = result[j] && tempResult[j];
+            
+            else if (W.contains(" OR ") && W.contains(" AND "))
+            {
+                String [] ANDOR = W.split(" OR ");
+                boolean []  result = AndQuery(ANDOR[0]);
+               
+                for ( int i = 1 ; i < ANDOR.length ; i++  )
+                {   
+                    boolean [] r2 =AndQuery(ANDOR[i]);
+                    for ( int j = 0 ; j <50 ; j++ )
+                         result[j] = result[j] || r2[j];
+                }
+                return result;
             }
+            
+            else 
+             if (W.contains(" AND "))
+                return AndQuery (W);
+            
+            return ORQuery(W);
         }
-        return result;
-    }
+   
+    public void printDocment (int dID){// Prints all words in a specific document
+    
+        if ( indexes[dID].index.empty()){
+            System.out.println("Empty Document");
+            return;
+            }
+            
+            indexes[dID].index.findFirst();
+            
+            for ( int i = 0; i< indexes[dID].index.size ; i++)
+            {
+                System.out.print (indexes[dID].index.retrieve() + " ");
+                indexes[dID].index.findNext();
+            }//for
+        
+    }// close method print
+
+
 }

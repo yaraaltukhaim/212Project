@@ -1,316 +1,178 @@
-// public class InvIndexRanked {
-//             
-//             LinkedList <TermRank> InvindexRank; 
-//             Count[] tFrequencies;
-//             
-//             public InvIndexRanked() {
-//                 InvindexRank = new LinkedList <TermRank>();
-//                 tFrequencies = new Count[50];
-//             }
-//             
-//             public int getSize()
-//             {
-//                 return InvindexRank.size();
-//             }// Returns the size of the inverted index
-//             
-//              class Count {//representing the frequency of a term in a document
-// 
-//         int documentID ,frequencyCount;  
-//     }
-// 
-//         public boolean addTerm(int dID, String W)
-//             {
-//               TermRank newTerm = new TermRank ();
-//                // If the index is empty, add the new term directly
-//                 if (InvindexRank.empty()){ 
-//                 newTerm.setTermWord(new ProcessedWord(W));
-//                 newTerm.markDocumentPresence(dID);
-//                 InvindexRank.insert(newTerm);
-//                 return true;
-//                }else{//checks if the term already exists
-//             
-//                     InvindexRank.findFirst();
-//                      do {
-//                     
-//                         if ( InvindexRank.retrieve().termWord.content.compareTo(W) == 0) {
-//                        
-//                             newTerm =  InvindexRank.retrieve();
-//                             newTerm.markDocumentPresence(dID);
-//                             InvindexRank.update(newTerm);
-//                             return false;// Term already exists, no new addition
-//                         }
-//                        InvindexRank.findNext();
-//                     }while (!InvindexRank.last());
-//                     
-//                     // Handle the last term in the index
-//                     if ( InvindexRank.retrieve().termWord.content.compareTo(W) == 0)
-//                     {
-//                         newTerm =  InvindexRank.retrieve();
-//                         newTerm.markDocumentPresence(dID);
-//                         InvindexRank.update(newTerm);
-//                         return false;
-//                     }
-//                     else{// If the term doesn't exist, add it as new
-//    
-//                     newTerm.setTermWord(new ProcessedWord(W));
-//                     newTerm.markDocumentPresence(dID);
-//                     InvindexRank.insert(newTerm);
-//                     }
-//                     return true;
-//            }
-//         } 
-// 
-// 
-//         public boolean TermExists(String W){
-//         
-//                if (InvindexRank.empty())
-//                    return false;
-//                    
-//                InvindexRank.findFirst();
-//                // Iterate through all terms in the index
-//                 for ( int i = 0 ; i <InvindexRank.size; i++) {
-//         // Compare the current term's word with the given word
-//         if (InvindexRank.retrieve().termWord.content.compareTo(W) == 0) 
-//             return true;  // Word found, return true
-//         // checking the last index
-//         InvindexRank.findNext();
-//         }
-// 
-//     // Return false if the word is not found after checking all terms
-//     return false;
-//         
-// }
-// 
-//         public void printDocment(){
-//          if (this.InvindexRank.empty()) {
-//             System.out.println("Empty Inverted Index");
-//             return; // Exit early if the index is empty
-//              }
-//            this.InvindexRank.findFirst();
-//              while ( ! this.InvindexRank.last()){
-//               System.out.println(InvindexRank.retrieve());
-//                     this.InvindexRank.findNext();
-//                 }//close while loop
-//                 System.out.println(InvindexRank.retrieve());
-//             }
-// 
-// 
-//               public void TF(String W)
-//         {
-//             W = W.toLowerCase().trim();
-//             String [] words = W.split(" ");
-//             tFrequencies = new Count[50];
-//             for (int i = 0; i < 50; i++)
-//             {
-//                 tFrequencies[i] = new Count();
-//                 tFrequencies[i].documentID = i;
-//                 tFrequencies[i].frequencyCount = 0;
-//             }//close for loop
-//             
-//                 for ( int i = 0 ; i < words.length ; i++)
-//             {
-//                 if (TermExists(words[i]))
-//                 {
-//                     int [] docs = InvindexRank.retrieve().getDocumentMapping();
-//                     for ( int j = 0 ; j < docs.length ; j ++)
-//                     {
-//                         if (docs[j] != 0)
-//                         {
-//                             int index = j;
-//                             tFrequencies[index].documentID = index;
-//                             tFrequencies[index].frequencyCount += docs[j];
-//                         }
-//                     }
-//                 }
-//             }
-//             
-//             
-//             mergesort(tFrequencies, 0, tFrequencies.length - 1);
-//             
-//             System.out.println("\nDocIDt\tScore");
-//             int s = 0; 
-//             while (s < tFrequencies.length && tFrequencies[s].frequencyCount != 0) {
-//             System.out.println(tFrequencies[s].documentID + "\t\t" + tFrequencies[s].frequencyCount);
-//             s++; 
-//          }      
-//       }//close method
-// 
-//         
-//       public static void mergesort (Count[] tFrequencies , int l , int r ) 
-//     {
-//         if ( l >= r )
-//             return;
-//         int m = ( l + r ) / 2;
-//         mergesort (tFrequencies, l , m ) ;          // Sort first half
-//         mergesort (tFrequencies, m + 1 , r ) ;    // Sort second half
-//         merge (tFrequencies, l , m , r ) ;            // Merge
-//     }
-// 
-//      private static void merge (Count[] tFrequencies, int l, int m, int r) {
-//     Count[] B = new Count[r - l + 1];
-//     int i = l, j = m + 1, k = 0;
-// 
-//     while (i <= m && j <= r) {
-//         if (tFrequencies[i].frequencyCount >= tFrequencies[j].frequencyCount)  // Compare frequency counts
-//             B[k++] = tFrequencies[i++];
-//         else
-//             B[k++] = tFrequencies[j++];
-//     }
-// 
-//     while (i <= m)  // Copy remaining elements from left subarray
-//         B[k++] = tFrequencies[i++];
-// 
-//     while (j <= r)  // Copy remaining elements from right subarray
-//         B[k++] = tFrequencies[j++];
-// 
-//     for (k = 0; k < B.length; k++)
-//         tFrequencies[k + l] = B[k];
-// }// close method merge
-// 
-// 
-// }
-
-
-
 public class InvIndexRanked {
-
-    LinkedList<TermRank> InvindexRank; // Mapping of terms to documents
-    Count[] tFrequencies; // Frequency counts for terms
-
-    public InvIndexRanked() {
-        InvindexRank = new LinkedList<TermRank>();
-        tFrequencies = new Count[50];
+       
+       class frequency//representing the frequency of a term in a documen
+    {
+        int docID = 0;
+        int f = 0;
     }
 
-    public int getSize() {
-        return InvindexRank.size();
-    } // Returns the size of the inverted index
+            LinkedList <TermRank> invertedindex; 
+            frequency [] freqs;
+            
+            public InvIndexRanked() {
+                invertedindex  = new LinkedList <TermRank>();
+                freqs = new frequency[50];
+            }
+            
+            public int getSize()
+            {
+                return invertedindex.size();
+            }// Returns the size of the inverted index
+            
+             
 
-    // Inner class to represent term frequency in a document
-    class Count {
-        int documentID, frequencyCount;
-    }
-
-    public boolean addTerm(int dID, String W) {
-        TermRank newTerm = new TermRank();
-
-        if (InvindexRank.empty()) { // If the index is empty
-            newTerm.setTermWord(new ProcessedWord(W));
-            newTerm.markDocumentPresence(dID);
-            InvindexRank.insert(newTerm);
-            return true;
-        } else { // If the index is not empty
-            InvindexRank.findFirst();
-            do {
-                if (InvindexRank.retrieve().termWord.content.compareTo(W) == 0) {
-                    newTerm = InvindexRank.retrieve();
-                    newTerm.markDocumentPresence(dID);
-                    InvindexRank.update(newTerm);
-                    return false; // Term already exists
-                }
-                InvindexRank.findNext();
-            } while (!InvindexRank.last());
-
-            // Handle the last term
-            if (InvindexRank.retrieve().termWord.content.compareTo(W) == 0) {
-                newTerm = InvindexRank.retrieve();
-                newTerm.markDocumentPresence(dID);
-                InvindexRank.update(newTerm);
-                return false;
-            } else { // Add new term
+        public boolean addTerm(int dID, String W)
+            {
+              TermRank newTerm = new TermRank ();
+               // If the index is empty, add the new term directly
+                if (invertedindex.empty()){ 
                 newTerm.setTermWord(new ProcessedWord(W));
                 newTerm.markDocumentPresence(dID);
-                InvindexRank.insert(newTerm);
-            }
-            return true;
-        }
-    }
-
-    public boolean TermExists(String W) {
-        if (InvindexRank.empty())
-            return false;
-
-        InvindexRank.findFirst();
-        for (int i = 0; i < InvindexRank.size; i++) {
-            if (InvindexRank.retrieve().termWord.content.compareTo(W) == 0)
+               invertedindex .insert(newTerm);
                 return true;
-            InvindexRank.findNext();
-        }
-        return false; // Word not found
-    }
+               }else{//checks if the term already exists
+            
+                    invertedindex.findFirst();
+                     while ( ! invertedindex.last()) {
+                    
+                        if ( invertedindex.retrieve().termWord.content.compareTo(W) == 0) {
+                       
+                            newTerm =  invertedindex.retrieve();
+                            newTerm.markDocumentPresence(dID);
+                            invertedindex.update(newTerm);
+                            return false;// Term already exists, no new addition
+                        }
+                      invertedindex.findNext();
+                    }
+                    
+                    // Handle the last term in the index
+                    if ( invertedindex.retrieve().termWord.content.compareTo(W) == 0)
+                    {
+                        newTerm =  invertedindex.retrieve();
+                        newTerm.markDocumentPresence(dID);
+                       invertedindex.update(newTerm);
+                        return false;
+                    }
+                    else{// If the term doesn't exist, add it as new
+   
+                    newTerm.setTermWord(new ProcessedWord(W));
+                    newTerm.markDocumentPresence(dID);
+                    invertedindex.insert(newTerm);
+                    }
+                    return true;
+           }
+        } 
 
-    public void printDocument() {
-        if (this.InvindexRank.empty()) {
+
+        public boolean TermExists(String W){
+        
+               if (invertedindex.empty())
+                   return false;
+                   
+              invertedindex.findFirst();
+               // Iterate through all terms in the index
+                for ( int i = 0 ; i <invertedindex.size; i++) {
+        // Compare the current term's word with the given word
+        if (invertedindex.retrieve().termWord.content.compareTo(W) == 0) 
+            return true;  // Word found, return true
+        // checking the last index
+        invertedindex.findNext();
+        }
+
+    // Return false if the word is not found after checking all terms
+    return false;
+        
+}
+
+        public void printDocment(){
+         if (this.invertedindex.empty()) 
             System.out.println("Empty Inverted Index");
-            return;
-        }
-        this.InvindexRank.findFirst();
-        while (!this.InvindexRank.last()) {
-            System.out.println(InvindexRank.retrieve());
-            this.InvindexRank.findNext();
-        }
-        System.out.println(InvindexRank.retrieve());
-    }
+           
+             else{
+           this.invertedindex.findFirst();
+             while ( ! this.invertedindex.last()){
+              System.out.println(invertedindex.retrieve());
+                    this.invertedindex.findNext();
+                }//close while loop
+                System.out.println(invertedindex.retrieve());
+            }
+            }
 
-    public void TF(String W) {
-        W = W.toLowerCase().trim();
-        String[] words = W.split(" ");
-        tFrequencies = new Count[50];
-        for (int i = 0; i < 50; i++) {
-            tFrequencies[i] = new Count();
-            tFrequencies[i].documentID = i;
-            tFrequencies[i].frequencyCount = 0;
-        }
 
-        for (int i = 0; i < words.length; i++) {
-            if (TermExists(words[i])) {
-                int[] docs = InvindexRank.retrieve().getDocumentMapping();
-                for (int j = 0; j < docs.length; j++) {
-                    if (docs[j] != 0) {
-                        int index = j;
-                        tFrequencies[index].documentID = index;
-                        tFrequencies[index].frequencyCount += docs[j];
+              public void TF(String W)
+        {
+            W = W.toLowerCase().trim();
+            String [] words = W.split(" ");
+            freqs = new frequency[50];
+            for (int i = 0; i < 50; i++)
+            {
+                freqs[i] = new frequency();
+                freqs[i].docID = i;
+                freqs[i].f = 0;
+            }//close for loop
+            
+                for ( int i = 0 ; i < words.length ; i++)
+            {
+                if (TermExists(words[i]))
+                {
+                    int [] docs = invertedindex.retrieve().getDocumentMapping();
+                    for ( int j = 0 ; j < docs.length ; j ++)
+                    {
+                        if (docs[j] != 0)
+                        {
+                            int index = j;
+                            freqs[index].docID = index;
+                            freqs[index].f += docs[j];
+                        }
                     }
                 }
             }
-        }
+            
+            
+            mergesort(freqs, 0, freqs.length-1 );
+            
+            System.out.println("\nDocIDt\tScore");
+            for ( int x = 0 ;  freqs[x].f != 0 ; x++)
+           
+            System.out.println(freqs[x].docID + "\t\t" + freqs[x].f);
+           
+             
+      }//close method
 
-        mergesort(tFrequencies, 0, tFrequencies.length - 1);
-
-        System.out.println("\nDocIDt\tScore");
-        int s = 0;
-        while (s < tFrequencies.length && tFrequencies[s].frequencyCount != 0) {
-            System.out.println(tFrequencies[s].documentID + "\t\t" + tFrequencies[s].frequencyCount);
-            s++;
-        }
-    }
-
-    public static void mergesort(Count[] tFrequencies, int l, int r) {
-        if (l >= r)
+        
+     public static void mergesort ( frequency [] A , int l , int r ) 
+    {
+        if ( l >= r )
             return;
-        int m = (l + r) / 2;
-        mergesort(tFrequencies, l, m); // Sort first half
-        mergesort(tFrequencies, m + 1, r); // Sort second half
-        merge(tFrequencies, l, m, r); // Merge
+        int m = ( l + r ) / 2;
+        mergesort (A , l , m ) ;          // Sort first half
+        mergesort (A , m + 1 , r ) ;    // Sort second half
+        merge (A , l , m , r ) ;            // Merge
     }
 
-    private static void merge(Count[] tFrequencies, int l, int m, int r) {
-        Count[] B = new Count[r - l + 1];
-        int i = l, j = m + 1, k = 0;
-
-        while (i <= m && j <= r) {
-            if (tFrequencies[i].frequencyCount >= tFrequencies[j].frequencyCount)
-                B[k++] = tFrequencies[i++];
+    private static void merge ( frequency [] A , int l , int m , int r ) 
+    {
+        frequency [] B = new frequency [ r - l + 1];
+        int i = l , j = m + 1 , k = 0;
+    
+        while ( i <= m && j <= r )
+        {
+            if ( A [ i ].f >= A [ j ].f)
+                B [ k ++] = A [ i ++];
             else
-                B[k++] = tFrequencies[j++];
+                B [ k ++] = A [ j ++];
         }
-
-        while (i <= m)
-            B[k++] = tFrequencies[i++];
-        while (j <= r)
-            B[k++] = tFrequencies[j++];
-
-        for (k = 0; k < B.length; k++)
-            tFrequencies[k + l] = B[k];
+        
+        if ( i > m )
+            while ( j <= r )
+                B [ k ++] = A [ j ++];
+        else
+            while ( i <= m )
+                B [ k ++] = A [ i ++];
+        
+        for ( k = 0; k < B . length ; k ++)
+            A [ k + l ] = B [ k ];
     }
-}
+
+
+}//close class 

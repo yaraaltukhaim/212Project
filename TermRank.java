@@ -1,7 +1,7 @@
 // Class to track a term and its frequency in multiple documents
 public class TermRank {
     ProcessedWord termWord; // Represents the term
-    int[] documentFrequencies; // Tracks frequency of the term in each document // used to be docIDS
+    int[] documentFrequencies; // Tracks frequency of the term in each document
 
     // Default constructor initializes the frequency array and term
     public TermRank() {
@@ -23,12 +23,12 @@ public class TermRank {
     }
 
     // Increment the frequency of the term for a specific document
-    public void markDocumentPresence(int docID) { //used to be add_docID //incrementFrequencyForDocument
+    public void markDocumentPresence(int docID) {  //incrementFrequencyForDocument
         this.documentFrequencies[docID]++;
     }
 
     // Setter 
-    public void setTermWord(ProcessedWord termWord) { //setVocabulary
+    public void setTermWord(ProcessedWord termWord) { 
         this.termWord = termWord;
     }
 
@@ -38,7 +38,7 @@ public class TermRank {
     }
 
     // Returns a copy of the document frequency array
-    public int[] getDocumentMapping() { //getDocs //getDocumentFrequencies
+    public int[] getDocumentMapping() { 
         int[] copy = new int[documentFrequencies.length];
         // Copy values into the new array
         for (int i = 0; i < copy.length; i++) {
@@ -48,13 +48,14 @@ public class TermRank {
     }
 
     // String representation of the term and its document frequencies
-    @Override
+  
     public String toString() {
         String docs = "";
         for (int i = 0, count = 0; i < documentFrequencies.length; i++) {
             if (documentFrequencies[i] != 0) {
                 if (count == 0) {
                     docs += " " + i; // First document ID without a comma
+                    count++;
                 } else {
                     docs += ", " + i; // Subsequent IDs with a comma
                 }

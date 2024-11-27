@@ -35,7 +35,7 @@ public class LinkedList<T>{
     // class Linked List
     private Node<T> head;
     private Node<T> current;
-    int size; //she added this
+    int size; 
     
     public LinkedList () {
         head = current = null;
@@ -50,7 +50,7 @@ public class LinkedList<T>{
     }
     
     public boolean last () {
-    return current.next == null;
+        return current.next == null;
     }
     public boolean full () {
             return false;
@@ -58,14 +58,11 @@ public class LinkedList<T>{
     public void findFirst () {
             current = head;
     }
-    
-   
-    
     public void findNext () {
-         current = current.next;
-   }
-     public T retrieve () {
-             return current.data;
+            current = current.next;
+    }
+    public T retrieve () {
+            return current.data;
     }
     public void update (T val) {
             current.data = val;

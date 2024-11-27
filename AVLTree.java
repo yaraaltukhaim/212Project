@@ -51,7 +51,7 @@ public class AVLTree<K extends Comparable<K>, T>{ //comparble is a class that ha
                         return data;
                     }
                     
-                    @Override
+                    
                     public String toString() {
                         return "AVL Node{" + "key=" + key + ", data =" + data + '}';
                     }
@@ -60,7 +60,7 @@ public class AVLTree<K extends Comparable<K>, T>{ //comparble is a class that ha
         //=============================================================================    
         private AVLNode<K,T> root;
         private AVLNode<K,T>  curr;
-        private int count; //she added
+        private int count; 
         
         public AVLTree() {
                 root = curr = null;
@@ -138,7 +138,7 @@ public class AVLTree<K extends Comparable<K>, T>{ //comparble is a class that ha
         }
 
         // rebalance the tree
-        void rebalance(AVLNode<K,T> node) {
+        void rebalance(AVLNode<K,T> node) {///// istoped here
                 if (node.bf > 0) {
                         if (node.right.bf < 0) {
                                 rightRotate(node.right);
